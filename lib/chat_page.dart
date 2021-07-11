@@ -16,12 +16,19 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    _sub = meteor.subscribe('sales');
+    _sub = meteor.subscribe('messages');
 
-    meteor.collection('rest_sales').listen((data) {
+    meteor.collection('users').listen((data) {
       print('data from collect :::$data');
-      // _users = data;
+      _users = data;
     });
+
+    // _sub = meteor.subscribe('sales');
+
+    // meteor.collection('rest_sales').listen((data) {
+    //   print('data from collect :::$data');
+    //   _users = data;
+    // });
   }
 
   @override
@@ -34,21 +41,32 @@ class _ChatPageState extends State<ChatPage> {
 
   void _sendMessage() {
     var msg = _textEditingControllerMessage.text;
-    // meteor.call('sendMessage', args: [msg]).then((res) {
-    //   _textEditingControllerMessage.text = '';
-    // }).catchError((_) {});
-    meteor.call(
-      'rest.findOrderList',
-      args: [
-        {
-          'invoiceId': '8vcgdWbpXK3itZGJg',
-          'draft': true,
-        }
-      ],
-    ).then((res) {
-      print('data from method call ::: $res');
+    meteor.call('sendMessage', args: [msg]).then((res) {
+      _textEditingControllerMessage.text = '';
+    }).catchError((_) {});
+    meteor.call('getMessages').then((data) {
+      print('data from method :::$data');
+      print(data);
     }).catchError((_) {});
   }
+
+  // void _sendMessage() {
+  // var msg = _textEditingControllerMessage.text;
+  // meteor.call('sendMessage', args: [msg]).then((res) {
+  //   _textEditingControllerMessage.text = '';
+  // }).catchError((_) {});
+  // meteor.call(
+  //   'rest.findOrderList',
+  //   args: [
+  //     {
+  //       'invoiceId': '8vcgdWbpXK3itZGJg',
+  //       'draft': true,
+  //     }
+  //   ],
+  // ).then((res) {
+  //   print('data from method call ::: $res');
+  // }).catchError((_) {});
+  // }
 
   void _clearAllMessage() async {
     if (await showDialog(
